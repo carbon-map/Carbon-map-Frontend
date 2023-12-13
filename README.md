@@ -28,6 +28,12 @@ npm run dev
 npm run build
 ```
 
+### Run Tailwind hotfix
+
+```sh
+npm run css
+```
+
 ### Run Unit Tests with [Vitest](https://vitest.dev/)
 
 ```sh
