@@ -6,8 +6,22 @@
       :d="pathData.d"
       :fill="pathData.fill"
       class="regional"
+<<<<<<< HEAD
       v-show="true"
       @click="toRegional(pathData.name)"
+=======
+      v-show="TaiwanShow"
+      @click="toRegional(pathData.id)"
+    />
+    <path
+      v-for="pathData in CityData"
+      :key="pathData.id"
+      :d="pathData.d"
+      :fill="pathData.fill"
+      class="regional"
+      v-show="RegionalShow[pathData.regional] && CityShow[pathData.id]"
+      @click="toCity(pathData.id)"
+>>>>>>> 934fe62383c6dc55aafe32d20412c946fbe3f257
     />
   </svg>
 </template>
@@ -15,6 +29,7 @@
 <script setup>
 
 import Taiwan from "@/assets/map/Taiwan.json"
+<<<<<<< HEAD
 import { ref } from "vue"
 
 // 整個台灣的地圖資料，區域是一塊一塊的
@@ -23,5 +38,30 @@ const TaiwanData = ref(Taiwan)
 function toRegional(area) {
   console.log(area)
 }
+=======
+import City from "@/assets/map/City.json"
+import { ref } from "vue"
 
+// 整個台灣的地圖資料，區域是一塊一塊的
+const TaiwanData = ref(Taiwan);
+>>>>>>> 934fe62383c6dc55aafe32d20412c946fbe3f257
+
+const CityData = ref(City);
+
+const TaiwanShow = ref(true);
+const RegionalShow = ref(new Array(5).fill(false));
+const CityShow = ref(new Array(22).fill(true));
+
+
+function toRegional(id) {
+  TaiwanShow.value = false;
+  RegionalShow.value[id] = true;
+}
+
+function toCity(id) {
+  console.log(id);
+  for(let i = 0; i < CityShow.value.length; i++){
+    if(i != id) CityShow.value[i] = false;
+  }
+}
 </script>
