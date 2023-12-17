@@ -6,10 +6,6 @@
       :d="pathData.d"
       :fill="pathData.fill"
       class="regional"
-<<<<<<< HEAD
-      v-show="true"
-      @click="toRegional(pathData.name)"
-=======
       v-show="TaiwanShow"
       @click="toRegional(pathData.id)"
     />
@@ -21,7 +17,6 @@
       class="regional"
       v-show="RegionalShow[pathData.regional] && CityShow[pathData.id]"
       @click="toCity(pathData.id)"
->>>>>>> 934fe62383c6dc55aafe32d20412c946fbe3f257
     />
   </svg>
 </template>
@@ -29,22 +24,11 @@
 <script setup>
 
 import Taiwan from "@/assets/map/Taiwan.json"
-<<<<<<< HEAD
-import { ref } from "vue"
-
-// 整個台灣的地圖資料，區域是一塊一塊的
-const TaiwanData = ref(Taiwan)
-
-function toRegional(area) {
-  console.log(area)
-}
-=======
 import City from "@/assets/map/City.json"
 import { ref } from "vue"
 
 // 整個台灣的地圖資料，區域是一塊一塊的
 const TaiwanData = ref(Taiwan);
->>>>>>> 934fe62383c6dc55aafe32d20412c946fbe3f257
 
 const CityData = ref(City);
 
