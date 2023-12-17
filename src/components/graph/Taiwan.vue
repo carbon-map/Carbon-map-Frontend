@@ -1,5 +1,5 @@
 <template>
-  <ArrowLeftOutlined class="text-red-200 text-3xl" v-show="!TaiwanShow" @click="previous()"/>
+  <ArrowLeftOutlined class="text-red-400 text-8xl hover:bg-zinc-100" v-show="!TaiwanShow" @click="previous()"/>
   <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 619 855" xml:space="preserve">
     <path
       v-for="pathData in TaiwanData"

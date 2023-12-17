@@ -28,3 +28,4 @@ src/css/index.css
 *.sw?
 .vscode
 *.tsbuildinfo
+.env
