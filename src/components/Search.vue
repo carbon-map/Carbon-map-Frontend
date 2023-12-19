@@ -25,7 +25,7 @@
       </div>
     </div>
     <div>
-      <div class="w-1/6 mx-auto text-center bg-blue-300">
+      <div class="w-1/6 mx-auto text-center bg-blue-300" @click="Search()">
         送出
       </div>
     </div>
@@ -46,5 +46,10 @@ const handleChange = value => {
 };
 // True 代表在顯示資料的地方，反之在查詢的地方
 const Data = ref(false);
-const ShowText = ref("查詢結果");
+const ShowText = ref("請選擇欲查詢的時間");
+
+function Search(){
+  Data.value = true;
+  ShowText.value = "查詢結果"
+}
 </script>
