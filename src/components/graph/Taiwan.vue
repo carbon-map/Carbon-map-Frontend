@@ -18,11 +18,11 @@
       :fill="pathData.fill"
       class="regional"
       v-show="RegionalShow[pathData.regional] && CityShow[pathData.id]"
-      @click="toCity(pathData.id)"
+      @click="toCity(pathData.id, pathData.name)"
     />
   </svg>
   <div v-show="ShowSearch">
-    <Search></Search>
+    <Search :City="SelectCity"></Search>
   </div>
 </template>
 
@@ -40,6 +40,7 @@ const CityData = ref(City);
 const TaiwanShow = ref(true);
 const ShowText = ref("請選擇區域");
 const ShowSearch = ref(false);
+let SelectCity = ref();
 
 // 紀錄現在選了哪個區域，全台灣時設為 -1 
 let RegionalIndex = -1;
@@ -58,12 +59,14 @@ function toRegional(id) {
   ShowText.value = "請選擇縣市";
 }
 
-function toCity(id) {
+function toCity(id, name) {
   ShowText.value = "";
   ShowSearch.value = true;
   for(let i = 0; i < CityShow.value.length; i++){
     if(i != id) CityShow.value[i] = false;
   }
+  SelectCity.value = name;
+  console.log(SelectCity.value)
 }
 
 function previous() {
