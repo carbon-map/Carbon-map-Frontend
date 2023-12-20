@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-center text-3xl text-emerald-500">{{ ShowText }}</div>
+    <div class="text-center text-3xl text-emerald-500 my-4">{{ ShowText }}</div>
   </div>
   
   <div v-show="!Data">
@@ -33,7 +33,12 @@
     <div class="flex w-2/3 mx-auto">
       <div class="border-solid border-2 w-1/4 text-center" v-for="Schema in ShowSchema"> {{ Schema }} </div>
     </div>
-    <div class="flex w-2/3 mx-auto">
+    <loading 
+      :active="IsLoading" 
+      :is-full-page="true"
+      :color="'#26852aff'">
+    </loading>
+    <div v-show="!IsLoading" class="flex w-2/3 mx-auto">
       <div class="border-solid border-2 w-1/4 text-center" v-for="Schema in ShowData"> {{ Schema }} </div>
     </div>
     <div 
@@ -49,6 +54,9 @@
 import { ref, defineProps } from "vue";
 import Date from "@/assets/data.json"
 import { searchCarbon } from "@/functions/carbon.js"
+import Loading from 'vue3-loading-overlay';
+// Import stylesheet
+import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
 const SelectYear = ref();
 const SelectMonth = ref();
 const DefaultYear = ref('請選擇年份');
@@ -62,6 +70,7 @@ const props = defineProps({
 const City = ref();
 const CarbonData = ref();
 const ShowData = ref([SelectYear, SelectMonth, City, CarbonData]);
+const IsLoading = ref(true);
 
 const handleChangeYear = value => {
   SelectYear.value = value;
@@ -75,14 +84,14 @@ const Data = ref(false);
 const ShowText = ref("請選擇欲查詢的時間");
 
 async function Search(){
+  if(SelectMonth.value === undefined || SelectYear.value === undefined) return;
+  IsLoading.value = true;
   Data.value = true;
   ShowText.value = "查詢結果";
-  console.log(SelectYear.value);
-  console.log(SelectMonth.value);
   City.value = props.City;
   let data = await searchCarbon(SelectYear.value, SelectMonth.value, City.value);
   CarbonData.value = Number(data['amount']);
-  console.log(CarbonData.value)
+  IsLoading.value = false;
 }
 
 function Return(){

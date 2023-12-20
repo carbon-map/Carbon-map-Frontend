@@ -21,7 +21,7 @@
       @click="toCity(pathData.id, pathData.name)"
     />
   </svg>
-  <div v-show="ShowSearch">
+  <div v-if="ShowSearch">
     <Search :City="SelectCity"></Search>
   </div>
 </template>

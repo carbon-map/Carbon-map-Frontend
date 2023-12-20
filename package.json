@@ -17,6 +17,7 @@
     "echarts": "^5.4.3",
     "vue": "^3.3.10",
     "vue-router": "^4.2.5",
+    "vue3-loading-overlay": "^0.0.0",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
