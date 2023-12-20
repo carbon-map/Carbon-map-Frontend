@@ -48,6 +48,7 @@
 <script setup>
 import { ref, defineProps } from "vue";
 import Date from "@/assets/data.json"
+import { searchCarbon } from "@/functions/carbon.js"
 const SelectYear = ref();
 const SelectMonth = ref();
 const DefaultYear = ref('請選擇年份');
@@ -59,7 +60,8 @@ const props = defineProps({
   City: String
 });
 const City = ref();
-const ShowData = ref([SelectYear, SelectMonth, City, "碳排放量(kg)"]);
+const CarbonData = ref();
+const ShowData = ref([SelectYear, SelectMonth, City, CarbonData]);
 
 const handleChangeYear = value => {
   SelectYear.value = value;
@@ -72,13 +74,13 @@ const handleChangeMonth = value => {
 const Data = ref(false);
 const ShowText = ref("請選擇欲查詢的時間");
 
-function Search(){
+async function Search(){
   Data.value = true;
   ShowText.value = "查詢結果";
   console.log(SelectYear.value);
   console.log(SelectMonth.value);
-
   City.value = props.City;
+  CarbonData.value = await searchCarbon(SelectYear.value, SelectMonth.value, City.value);
 }
 
 function Return(){

@@ -47,7 +47,6 @@ let RegionalIndex = -1;
 const RegionalShow = ref(new Array(5).fill(false));
 const CityShow = ref(new Array(22).fill(true));
 
-
 // 要 RegionalShow 跟 CityShow 都為 true 才能跑
 // 因此二級區域選單為選定區域 true 其餘 false
 // 三級城市預設全開啟
