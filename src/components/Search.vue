@@ -80,7 +80,9 @@ async function Search(){
   console.log(SelectYear.value);
   console.log(SelectMonth.value);
   City.value = props.City;
-  CarbonData.value = await searchCarbon(SelectYear.value, SelectMonth.value, City.value);
+  let data = await searchCarbon(SelectYear.value, SelectMonth.value, City.value);
+  CarbonData.value = Number(data['amount']);
+  console.log(CarbonData.value)
 }
 
 function Return(){

@@ -6,14 +6,13 @@ const TestApiSite = `http://${env.VITE_API}/`;
 
 export async function searchCarbon(Year, Month, City)
 {
-  const apiUrl = TestApiSite + "/data";
-
+  const apiUrl = TestApiSite + "data";
   return new Promise((resolve, reject) => {
     axios.get(apiUrl, {
       params: {
         year: Year,
         month: Month,
-        city: City
+        city: City.trim()
       }
     })
     .then((response) => {
