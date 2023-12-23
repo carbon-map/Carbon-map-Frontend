@@ -80,14 +80,15 @@ async function toRegional(id) {
   let DomCenter = CalCenter(pointSet);
   let Shift = { x: WindowCenter.x - DomCenter.x, y: WindowCenter.y - DomCenter.y};
   
-  // for(let i = 0; i < CityData.value.length; i++){
-  //   if(CityData.value[i].regional == id){
-  //     let obj = CityInform[CityData.value[i].id];
-  //     console.log(obj.value);
-  //     // console.log(obj.style.top)
-  //     // console.log(obj.style.left)
-  //   }
-  // }
+  for(let i = 0; i < CityData.value.length; i++){
+    if(CityData.value[i].regional == id){
+      let obj = CityInform[CityData.value[i].id].value;
+      console.log(obj.style);
+
+      
+      obj.style.transform = `translate(${Shift.x}px, ${Shift.y}px)`;
+    }
+  }
 
 }
 

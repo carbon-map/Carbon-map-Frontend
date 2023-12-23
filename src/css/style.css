@@ -9,5 +9,5 @@ html, body, #app
 
 .regional
 {
-  @apply hover:fill-gray-300 transition-colors duration-200 ;
+  @apply hover:fill-gray-300 transition-colors duration-200 absolute;
 }
