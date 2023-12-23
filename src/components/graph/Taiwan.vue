@@ -33,7 +33,7 @@ import Taiwan from "@/assets/map/Taiwan.json"
 import City from "@/assets/map/City.json"
 import Search from "@/components/Search.vue"
 import { CalCenter,  GetCenterPoint} from "@/functions/Calculate"
-import { ref, nextTick } from "vue"
+import { ref, nextTick, onMounted } from "vue"
 import { ArrowLeftOutlined } from '@ant-design/icons-vue';
 
 // 整個台灣的地圖資料，區域是一塊一塊的
@@ -75,9 +75,20 @@ async function toRegional(id) {
     }
   }
 
-  // console.log(pointSet)
-  console.log(GetCenterPoint())
-  console.log(CalCenter(pointSet))
+  
+  let WindowCenter = GetCenterPoint();
+  let DomCenter = CalCenter(pointSet);
+  let Shift = { x: WindowCenter.x - DomCenter.x, y: WindowCenter.y - DomCenter.y};
+  
+  // for(let i = 0; i < CityData.value.length; i++){
+  //   if(CityData.value[i].regional == id){
+  //     let obj = CityInform[CityData.value[i].id];
+  //     console.log(obj.value);
+  //     // console.log(obj.style.top)
+  //     // console.log(obj.style.left)
+  //   }
+  // }
+
 }
 
 function setCityRef(el, id){
@@ -97,6 +108,10 @@ function toCity(id, name) {
   SelectCity.value = name;
   console.log(SelectCity.value)
 }
+
+onMounted(() => {
+  window.previous = previous;
+})
 
 function previous() {
   let flag = false;
