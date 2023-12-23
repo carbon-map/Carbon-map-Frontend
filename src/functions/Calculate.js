@@ -9,7 +9,7 @@ export function CalCenter(pointSet){
     ry = Math.max(pointSet[i][3], ry);
   }
 
-  return { x: (lx + rx) / 2, y: (ly +  ry) / 2};
+  return { x: Math.floor((lx + rx) / 2), y: Math.floor((ly +  ry) / 2)};
 }
 
 export function GetCenterPoint() {
