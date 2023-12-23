@@ -19,6 +19,7 @@
       class="regional"
       v-show="RegionalShow[pathData.regional] && CityShow[pathData.id]"
       @click="toCity(pathData.id, pathData.name)"
+      :ref="el => setCityRef(el, pathData.id)"
     />
   </svg>
   <div v-if="ShowSearch">
@@ -31,7 +32,8 @@
 import Taiwan from "@/assets/map/Taiwan.json"
 import City from "@/assets/map/City.json"
 import Search from "@/components/Search.vue"
-import { ref } from "vue"
+import { CalCenter,  GetCenterPoint} from "@/functions/Calculate"
+import { ref, nextTick } from "vue"
 import { ArrowLeftOutlined } from '@ant-design/icons-vue';
 
 // 整個台灣的地圖資料，區域是一塊一塊的
@@ -46,17 +48,45 @@ let SelectCity = ref();
 let RegionalIndex = -1;
 const RegionalShow = ref(new Array(5).fill(false));
 const CityShow = ref(new Array(22).fill(true));
+const CityInform = (new Array(22)).fill().map(() => ref(null));
 
 // 要 RegionalShow 跟 CityShow 都為 true 才能跑
 // 因此二級區域選單為選定區域 true 其餘 false
 // 三級城市預設全開啟
 
-function toRegional(id) {
+async function toRegional(id) {
   TaiwanShow.value = false;
   RegionalShow.value[id] = true;
   RegionalIndex = id;
   ShowText.value = "請選擇縣市";
+
+
+  // 等待 v-show 改變渲染完
+  await nextTick();
+
+  let pointSet = [];
+
+  for(let i = 0; i < CityData.value.length; i++){
+    if(CityData.value[i].regional == id){
+      let bound = CityInform[CityData.value[i].id].value.getBoundingClientRect();
+      let x = bound.x;
+      let y = bound.y;
+      pointSet.push([x, y, x + bound.width, y + bound.height]);
+    }
+  }
+
+  // console.log(pointSet)
+  console.log(GetCenterPoint())
+  console.log(CalCenter(pointSet))
 }
+
+function setCityRef(el, id){
+  CityInform[id].value = el;
+}
+
+// onmounted(() => {
+//  
+// })
 
 function toCity(id, name) {
   ShowText.value = "";
