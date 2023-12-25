@@ -26,6 +26,12 @@
     <div v-if="ShowSearch" class="h-1/3">
       <Search :City="SelectCity"></Search>
     </div>
+    <loading 
+      :active="IsLoading" 
+      :is-full-page="true"
+      :color="'#26852aff'"
+      :opacity="1">
+    </loading>
   </div>
 </template>
 
@@ -37,17 +43,20 @@ import Search from "@/components/Search.vue"
 import { CalCenter,  GetCenterPoint} from "@/functions/Calculate"
 import { ref, nextTick, onMounted } from "vue"
 import { ArrowLeftOutlined } from '@ant-design/icons-vue';
-
+import Loading from 'vue3-loading-overlay';
+// Import stylesheet
+import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
 // 整個台灣的地圖資料，區域是一塊一塊的
 const TaiwanData = ref(Taiwan);
 const CityData = ref(City);
 const TaiwanShow = ref(true);
 const ShowText = ref("請選擇區域");
 const ShowSearch = ref(false);
+const IsLoading = ref(false);
 let SelectCity = ref();
 let ShiftRegional = {};
 let ShiftRegionalIndex = [];
-
+let ShiftCity = {};
 // 紀錄現在選了哪個區域，全台灣時設為 -1 
 let RegionalIndex = -1;
 const RegionalShow = ref(new Array(5).fill(false));
@@ -90,15 +99,11 @@ async function toRegional(id) {
   ShiftRegional.x = WindowCenter.x - DomCenter.x;
   ShiftRegional.y = WindowCenter.y - DomCenter.y;
   
-  console.log(ShiftRegional)
   for(let i = 0; i < CityData.value.length; i++){
     if(CityData.value[i].regional == id){
       let obj = CityInform[CityData.value[i].id].value;
       ShiftRegionalIndex.push(i);
-      //console.log(CityInform[CityData.value[i].id].value.getBoundingClientRect());
       obj.style.transform = `translate(${ShiftRegional.x}px, ${ShiftRegional.y}px)`;
-      // await sleep(1000); 
-      console.log(CityInform[CityData.value[i].id].value.getBoundingClientRect());
     }
   }
 
@@ -109,11 +114,36 @@ function setCityRef(el, id){
 }
 
 
-function toCity(id, name) {
+async function toCity(id, name) {
+  let flag = false;
+
+  for(let i = 0; i < CityShow.value.length; i++){
+    if(CityShow.value[i] == false) flag = true;
+  }
+
+  if(flag) return;
   
   ShowSearch.value = true;
   for(let i = 0; i < CityShow.value.length; i++){
     if(i != id) CityShow.value[i] = false;
+  }
+  for(let i = 0; i < CityData.value.length; i++){
+    if(CityData.value[i].id == id){
+      let obj = CityInform[CityData.value[i].id].value;
+      obj.style.transform = "";
+      IsLoading.value = true;
+      await sleep(300);
+      IsLoading.value = false;
+      let bound = obj.getBoundingClientRect();
+      let x = bound.x;
+      let y = bound.y;
+      let DomCenter = CalCenter([[x, y, x + bound.width, y + bound.height]]);
+      let WindowCenter = GetCenterPoint();
+      ShiftCity.x = WindowCenter.x - DomCenter.x;
+      ShiftCity.y = WindowCenter.y - DomCenter.y;
+      obj.style.transform = `translate(${ShiftCity.x}px, ${ShiftCity.y}px)`;
+      break;
+    }
   }
   SelectCity.value = name;
   ShowText.value = name;
@@ -134,18 +164,11 @@ async function previous() {
   //  CityShow 都為 True ， 代表現在在二級選單
   if(!flag){
     
-    
-    console.log(ShiftRegional)
     for(let i = 0; i < ShiftRegionalIndex.length; i++){
       let idx = ShiftRegionalIndex[i];
-      // console.log(idx)
       let obj = CityInform[CityData.value[idx].id].value;
-      console.log(CityInform[CityData.value[idx].id].value.getBoundingClientRect());
       obj.style.transform = ``;
-      console.log(CityInform[CityData.value[idx].id].value.getBoundingClientRect());
-      // console.log(obj.style.transform)
     }
-    await sleep(300);
     ShowText.value = "請選擇區域";
     RegionalShow.value[RegionalIndex] = false;
     RegionalIndex = -1;
@@ -154,6 +177,16 @@ async function previous() {
   }
 
   else{
+    for(let i = 0; i < ShiftRegionalIndex.length; i++){
+      let idx = ShiftRegionalIndex[i];
+      let obj = CityInform[CityData.value[idx].id].value;
+      obj.style.transform = ``;
+    }
+    for(let i = 0; i < ShiftRegionalIndex.length; i++){
+      let idx = ShiftRegionalIndex[i];
+      let obj = CityInform[CityData.value[idx].id].value;
+      obj.style.transform = `translate(${ShiftRegional.x}px, ${ShiftRegional.y}px)`;
+    }
     ShowText.value = "請選擇縣市";
     ShowSearch.value = false;
   }
