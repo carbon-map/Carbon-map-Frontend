@@ -95,9 +95,9 @@ async function toRegional(id) {
     if(CityData.value[i].regional == id){
       let obj = CityInform[CityData.value[i].id].value;
       ShiftRegionalIndex.push(i);
-      console.log(CityInform[CityData.value[i].id].value.getBoundingClientRect());
+      //console.log(CityInform[CityData.value[i].id].value.getBoundingClientRect());
       obj.style.transform = `translate(${ShiftRegional.x}px, ${ShiftRegional.y}px)`;
-      await sleep(1000);
+      // await sleep(1000); 
       console.log(CityInform[CityData.value[i].id].value.getBoundingClientRect());
     }
   }
@@ -110,12 +110,13 @@ function setCityRef(el, id){
 
 
 function toCity(id, name) {
-  ShowText.value = "";
+  
   ShowSearch.value = true;
   for(let i = 0; i < CityShow.value.length; i++){
     if(i != id) CityShow.value[i] = false;
   }
   SelectCity.value = name;
+  ShowText.value = name;
 }
 
 onMounted(() => {
@@ -132,7 +133,7 @@ async function previous() {
   
   //  CityShow 都為 True ， 代表現在在二級選單
   if(!flag){
-    ShowText.value = "請選擇區域";
+    
     
     console.log(ShiftRegional)
     for(let i = 0; i < ShiftRegionalIndex.length; i++){
@@ -140,11 +141,12 @@ async function previous() {
       // console.log(idx)
       let obj = CityInform[CityData.value[idx].id].value;
       console.log(CityInform[CityData.value[idx].id].value.getBoundingClientRect());
-      obj.style.transform = `translate(${-ShiftRegional.x}px, ${-ShiftRegional.y}px) scale(1)`;
-      await sleep(1000);
+      obj.style.transform = ``;
       console.log(CityInform[CityData.value[idx].id].value.getBoundingClientRect());
       // console.log(obj.style.transform)
     }
+    await sleep(300);
+    ShowText.value = "請選擇區域";
     RegionalShow.value[RegionalIndex] = false;
     RegionalIndex = -1;
     TaiwanShow.value = true;
