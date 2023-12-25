@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
+    "@coreui/vue-chartjs": "^2.2.0",
     "ant-design-vue": "^4.0.7",
     "axios": "^1.6.2",
     "echarts": "^5.4.3",

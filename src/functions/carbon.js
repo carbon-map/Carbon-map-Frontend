@@ -2,16 +2,20 @@ import axios from 'axios';
 
 const env = import.meta.env;
 
-const TestApiSite = `http://${env.VITE_API}/`;
+const TestApiSite = `http://${env.VITE_API}:${env.VITE_BACKEND_PORT}/`;
 
-export async function searchCarbon(Year, Month, City)
+export async function searchCarbon(YearStart, MonthStart, YearEnd, MonthEnd, City)
 {
-  const apiUrl = TestApiSite + "data";
+  const apiUrl = TestApiSite + "dataInterval";
+  console.log(apiUrl)
+
   return new Promise((resolve, reject) => {
     axios.get(apiUrl, {
       params: {
-        year: Year,
-        month: Month,
+        yearStart: YearStart,
+        monthEnd: MonthStart,
+        yearEnd: YearEnd,
+        monthEnd: MonthEnd,
         city: City.trim()
       }
     })
