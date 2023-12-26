@@ -30,17 +30,22 @@
     </div>
   </div>
   <div v-show="Data">
-    <div class="flex w-2/3 mx-auto">
-      <div class="border-solid border-2 w-1/4 text-center" v-for="Schema in ShowSchema"> {{ Schema }} </div>
+    <div v-show="!SelectOneYear">
+      <div class="flex w-2/3 mx-auto">
+        <div class="border-solid border-2 w-1/4 text-center" v-for="Schema in ShowSchema"> {{ Schema }} </div>
+      </div>
+      <div v-show="!IsLoading" class="flex w-2/3 mx-auto">
+        <div class="border-solid border-2 w-1/4 text-center" v-for="Schema in ShowData"> {{ Schema }} </div>
+      </div>
+    </div>
+    <div v-if="SelectOneYear">
+      <Table :Data="YearData"></Table>
     </div>
     <loading 
       :active="IsLoading" 
       :is-full-page="true"
       :color="'#26852aff'">
     </loading>
-    <div v-show="!IsLoading" class="flex w-2/3 mx-auto">
-      <div class="border-solid border-2 w-1/4 text-center" v-for="Schema in ShowData"> {{ Schema }} </div>
-    </div>
     <div 
       class="text-center mx-auto my-4 p-2 rounded-lg border-2 text-xl text-white bg-blue-700 w-max"
       @click="Return()"
@@ -51,12 +56,13 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from "vue";
+import { ref, defineProps, onMounted, nextTick } from "vue";
 import Date from "@/assets/data.json"
-import { searchCarbon } from "@/functions/carbon.js"
+import { searchCarbon, searchCarbonYear } from "@/functions/carbon.js"
 import Loading from 'vue3-loading-overlay';
 // Import stylesheet
 import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
+import Table from "@/components/Table.vue"
 const SelectYear = ref();
 const SelectMonth = ref();
 const DefaultYear = ref('請選擇年份');
@@ -71,6 +77,13 @@ const City = ref();
 const CarbonData = ref();
 const ShowData = ref([SelectYear, SelectMonth, City, CarbonData]);
 const IsLoading = ref(true);
+const chart = ref();
+
+// 選擇以年查詢
+const SelectOneYear = ref(false);
+let YearData = ref([]);
+
+
 
 const handleChangeYear = value => {
   SelectYear.value = value;
@@ -84,14 +97,27 @@ const Data = ref(false);
 const ShowText = ref("請選擇欲查詢的時間");
 
 async function Search(){
-  if(SelectMonth.value === undefined || SelectYear.value === undefined) return;
+  if(SelectMonth.value === undefined && SelectYear.value === undefined) return;
   IsLoading.value = true;
   Data.value = true;
   ShowText.value = "查詢結果";
   City.value = props.City;
-  let data = await searchCarbon(SelectYear.value, SelectMonth.value, City.value);
-  CarbonData.value = Number(data['amount']);
-  IsLoading.value = false;
+  if(SelectMonth.value === undefined || SelectMonth.value == 13){
+    YearData.value = [];
+    for(let i = 1; i <= 12; i++){
+      let temp = await searchCarbon(SelectYear.value, i, City.value);
+      YearData.value.push(Number(temp['amount']));
+    }
+    console.log(YearData.value);
+    SelectOneYear.value = true;
+    IsLoading.value = false;
+  }
+  else{
+    SelectOneYear.value = false;
+    let data = await searchCarbon(SelectYear.value, SelectMonth.value, City.value);
+    CarbonData.value = Number(data['amount']);
+    IsLoading.value = false;
+  }
 }
 
 function Return(){

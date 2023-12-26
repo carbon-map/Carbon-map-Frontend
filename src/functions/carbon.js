@@ -24,3 +24,27 @@ export async function searchCarbon(Year, Month, City)
     });
   });
 }
+
+export async function searchCarbonYear(Year, City)
+{ 
+  console.log(City);
+  const apiUrl = TestApiSite + "dataInterval";
+  return new Promise((resolve, reject) => {
+    axios.get(apiUrl, {
+      params: {
+        yearStart: Year,
+        yearEnd: Year,
+        monthStart: 1,
+        monthEnd: 12,
+        city: City.trim()
+      }
+    })
+    .then((response) => {
+      resolve(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+      reject(error);
+    });
+  });
+}
