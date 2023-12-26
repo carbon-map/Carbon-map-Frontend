@@ -106,10 +106,13 @@ async function Search(){
   if(SelectMonth.value === undefined || SelectMonth.value == 13){
     YearData.value = [];
     SelectOneMonth.value = false;
-    for(let i = 1; i <= 12; i++){
-      let temp = await searchCarbon(SelectYear.value, i, City.value);
-      YearData.value.push(Math.floor(Number(temp['amount']) / 1000));
+    
+    let temp = await searchCarbonYear(SelectYear.value, City.value);
+
+    for(let i = 0; i < temp['amount'].length; i++){
+      YearData.value.push(Math.floor(Number(temp['amount'][i]) / 1000));
     }
+    
     SelectOneYear.value = true;
     console.log(YearData.value);
     IsLoading.value = false;
@@ -117,7 +120,7 @@ async function Search(){
   else{
     SelectOneMonth.value = true;
     let data = await searchCarbon(SelectYear.value, SelectMonth.value, City.value);
-    CarbonData.value = Math.floor(Number(data['amount']) / 1000);
+    CarbonData.value = Math.floor(Number(data['amount'][0]) / 1000);
     IsLoading.value = false;
   }
 }

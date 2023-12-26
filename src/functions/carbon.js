@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { all } from 'axios';
 
 const env = import.meta.env;
 
@@ -27,15 +27,12 @@ export async function searchCarbon(Year, Month, City)
 
 export async function searchCarbonYear(Year, City)
 { 
-  console.log(City);
-  const apiUrl = TestApiSite + "dataInterval";
+  const apiUrl = TestApiSite + "data";
   return new Promise((resolve, reject) => {
     axios.get(apiUrl, {
       params: {
-        yearStart: Year,
-        yearEnd: Year,
-        monthStart: 1,
-        monthEnd: 12,
+        year: Year,
+        month: "all",
         city: City.trim()
       }
     })
