@@ -5,36 +5,36 @@
   
   <div v-show="!Data">
     <div class="flex">
-      <div class="w-1/2">
+      <div class="w-1/2 flex justify-center">
         <a-select
           v-model:value="DefaultYear"
           :options="optionsYear"
           @change="handleChangeYear"
-          class="w-1/3 mx-auto"
+          class="w-3/4 mx-auto"
         ></a-select>
       </div>
-      <div class="w-1/2">
+      <div class="w-1/2 flex justify-center">
         <a-select
           ref="select"
           v-model:value="DefaultMonth"
           :options="optionsMonth"
           @change="handleChangeMonth"
-          class="w-1/3 mx-auto"
+          class="w-3/4 mx-auto"
         ></a-select>
       </div>
     </div>
     <div>
-      <div class="w-1/6 mx-auto text-center bg-blue-300" @click="Search()">
+      <div class="text-center mx-auto my-2 px-2 rounded-lg border-2 text-xl text-white bg-blue-700 w-max" @click="Search()">
         送出
       </div>
     </div>
   </div>
   <div v-show="Data">
-    <div v-show="!SelectOneYear">
-      <div class="flex w-2/3 mx-auto">
+    <div v-show="SelectOneMonth">
+      <div class="flex w-full mx-auto">
         <div class="border-solid border-2 w-1/4 text-center" v-for="Schema in ShowSchema"> {{ Schema }} </div>
       </div>
-      <div v-show="!IsLoading" class="flex w-2/3 mx-auto">
+      <div v-show="!IsLoading" class="flex w-full mx-auto">
         <div class="border-solid border-2 w-1/4 text-center" v-for="Schema in ShowData"> {{ Schema }} </div>
       </div>
     </div>
@@ -47,7 +47,7 @@
       :color="'#26852aff'">
     </loading>
     <div 
-      class="text-center mx-auto my-4 p-2 rounded-lg border-2 text-xl text-white bg-blue-700 w-max"
+      class="text-center mx-auto my-4 p-2 rounded-lg border-2 text-l text-white bg-blue-700 w-max"
       @click="Return()"
     >
       重新查詢
@@ -69,7 +69,7 @@ const DefaultYear = ref('請選擇年份');
 const optionsYear = ref(Date['Year']);
 const DefaultMonth = ref('請選擇月份');
 const optionsMonth = ref(Date['Month']);
-const ShowSchema = ["年份", "月份", "城市", "碳排放量(kg)"];
+const ShowSchema = ["年份", "月份", "城市", "碳排放量"];
 const props = defineProps({
   City: String
 });
@@ -81,6 +81,7 @@ const chart = ref();
 
 // 選擇以年查詢
 const SelectOneYear = ref(false);
+const SelectOneMonth = ref(false);
 let YearData = ref([]);
 
 
@@ -104,23 +105,25 @@ async function Search(){
   City.value = props.City;
   if(SelectMonth.value === undefined || SelectMonth.value == 13){
     YearData.value = [];
+    SelectOneMonth.value = false;
     for(let i = 1; i <= 12; i++){
       let temp = await searchCarbon(SelectYear.value, i, City.value);
-      YearData.value.push(Number(temp['amount']));
+      YearData.value.push(Math.floor(Number(temp['amount']) / 1000));
     }
-    console.log(YearData.value);
     SelectOneYear.value = true;
+    console.log(YearData.value);
     IsLoading.value = false;
   }
   else{
-    SelectOneYear.value = false;
+    SelectOneMonth.value = true;
     let data = await searchCarbon(SelectYear.value, SelectMonth.value, City.value);
-    CarbonData.value = Number(data['amount']);
+    CarbonData.value = Math.floor(Number(data['amount']) / 1000);
     IsLoading.value = false;
   }
 }
 
 function Return(){
+  SelectOneYear.value = false;
   Data.value = false;
   ShowText.value = "請選擇欲查詢的時間";
 }

@@ -1,7 +1,7 @@
 <template>
-  <ArrowLeftOutlined class="text-red-400 text-8xl hover:bg-zinc-100" v-show="!TaiwanShow" @click="previous()"/>
-  <div class="text-center text-4xl text-emerald-500">{{ ShowText }}</div>
-  <div class="relative">
+  <!-- <ArrowLeftOutlined class="text-red-400 text-8xl hover:bg-zinc-100" v-show="!TaiwanShow" @click="previous()"/> -->
+  <div class="text-center text-4xl text-emerald-500 mt-4">{{ ShowText }}</div>
+  <div ref="main" class="relative m-8 mt-24 h-1/2">
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 619 855" xml:space="preserve">
       <path
         v-for="pathData in TaiwanData"
@@ -23,15 +23,15 @@
         :ref="el => setCityRef(el, pathData.id)"
       />
     </svg>
-    <div v-if="ShowSearch" class="h-1/3">
-      <Search :City="SelectCity"></Search>
-    </div>
     <loading 
       :active="IsLoading" 
       :is-full-page="true"
       :color="'#26852aff'"
       :opacity="1">
     </loading>
+  </div>
+  <div v-if="ShowSearch" class="h-auto">
+    <Search :City="SelectCity"></Search>
   </div>
 </template>
 
@@ -57,6 +57,7 @@ let SelectCity = ref();
 let ShiftRegional = {};
 let ShiftRegionalIndex = [];
 let ShiftCity = {};
+let main = ref()
 // 紀錄現在選了哪個區域，全台灣時設為 -1 
 let RegionalIndex = -1;
 const RegionalShow = ref(new Array(5).fill(false));
@@ -116,13 +117,15 @@ function setCityRef(el, id){
 
 async function toCity(id, name) {
   let flag = false;
-
   for(let i = 0; i < CityShow.value.length; i++){
     if(CityShow.value[i] == false) flag = true;
   }
 
   if(flag) return;
   
+  main.value.style = "height:35%;  margin-top: 1rem;"
+  console.log(main.value);
+
   ShowSearch.value = true;
   for(let i = 0; i < CityShow.value.length; i++){
     if(i != id) CityShow.value[i] = false;
@@ -141,7 +144,8 @@ async function toCity(id, name) {
       let WindowCenter = GetCenterPoint();
       ShiftCity.x = WindowCenter.x - DomCenter.x;
       ShiftCity.y = WindowCenter.y - DomCenter.y;
-      obj.style.transform = `translate(${ShiftCity.x}px, ${ShiftCity.y}px)`;
+      obj.style.transform += ` translate(${ShiftCity.x * 2 }px, ${ShiftCity.y * 2}px)`;
+      obj.style += " margin-top: 1rem; height:200%;"
       break;
     }
   }
@@ -177,6 +181,7 @@ async function previous() {
   }
 
   else{
+    main.value.style = "";
     for(let i = 0; i < ShiftRegionalIndex.length; i++){
       let idx = ShiftRegionalIndex[i];
       let obj = CityInform[CityData.value[idx].id].value;

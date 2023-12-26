@@ -9,5 +9,10 @@ html, body, #app
 
 .regional
 {
-  @apply hover:fill-gray-300 transition-colors duration-200 absolute transition-transform ease-in-out duration-100 ;
+  @apply active:fill-gray-300 transition-colors duration-200 absolute transition-transform ease-in-out duration-100 ;
+}
+
+*
+{
+  @apply select-none overflow-hidden;
 }
